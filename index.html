@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UK Cultures Training</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: #0e0e12;
+  color: #e8e4dc;
+  font-family: Georgia, 'Times New Roman', serif;
+  min-height: 100vh;
+}
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 20px;
+  background: #0a0a0f;
+  border-bottom: 1px solid #2a2a38;
+}
+.nav-logo { font-size: 1rem; font-weight: bold; color: #d4a843; flex: 1; font-family: Georgia, serif; }
+.nav-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.nav-tab {
+  padding: 6px 14px; border-radius: 20px;
+  border: 1px solid #2a2a38;
+  background: transparent; color: #7a7a92;
+  font-family: Arial, sans-serif; font-size: .8rem;
+  cursor: pointer;
+}
+.nav-tab:hover { color: #e8e4dc; border-color: #e8e4dc; }
+.nav-tab.active { background: #d4a843; color: #0e0e12; border-color: #d4a843; font-weight: bold; }
+
+/* PAGES */
+.page { display: none; padding-top: 68px; min-height: 100vh; }
+.page.active { display: block; }
+
+/* HERO */
+.hero { text-align: center; padding: 60px 20px 50px; }
+.hero-flags { font-size: 2.4rem; letter-spacing: .15em; margin-bottom: 20px; }
+.hero h1 { font-family: Georgia, serif; font-size: clamp(1.8rem, 5vw, 3.4rem); line-height: 1.2; margin-bottom: 14px; }
+.hero h1 span { color: #d4a843; font-style: italic; }
+.hero p { color: #7a7a92; font-size: 1rem; max-width: 520px; margin: 0 auto 36px; font-family: Arial, sans-serif; line-height: 1.6; }
+.hero-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; max-width: 860px; margin: 0 auto; }
+.nation-card {
+  background: #16161e; border: 1px solid #2a2a38;
+  border-radius: 12px; padding: 22px;
+  cursor: pointer; text-align: left;
+  transition: transform .2s, box-shadow .2s;
+}
+.nation-card:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0,0,0,.5); }
+.nation-card.eng { border-top: 3px solid #cf3a3a; }
+.nation-card.sco { border-top: 3px solid #4a7fd4; }
+.nation-card.wal { border-top: 3px solid #1a7c3e; }
+.nation-card.ni  { border-top: 3px solid #c77b22; }
+.nation-card .flag { font-size: 1.8rem; margin-bottom: 10px; }
+.nation-card h3 { font-family: Georgia, serif; font-size: 1.1rem; margin-bottom: 6px; color: #e8e4dc; }
+.nation-card p  { color: #7a7a92; font-size: .8rem; line-height: 1.5; font-family: Arial, sans-serif; }
+
+/* MODULE HEADER */
+.mod-header { padding: 36px 20px 16px; max-width: 820px; margin: 0 auto; }
+.breadcrumb { color: #7a7a92; font-size: .8rem; margin-bottom: 10px; cursor: pointer; font-family: Arial, sans-serif; }
+.breadcrumb:hover { color: #e8e4dc; }
+.mod-title { font-family: Georgia, serif; font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: bold; }
+.mod-sub { color: #7a7a92; margin-top: 6px; font-family: Arial, sans-serif; font-size: .9rem; }
+
+/* NATION TABS */
+.ntabs { display: flex; max-width: 820px; margin: 20px auto 0; padding: 0 20px; border-bottom: 1px solid #2a2a38; }
+.ntab { padding: 9px 16px; background: none; border: none; color: #7a7a92; font-family: Arial, sans-serif; font-size: .85rem; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.ntab:hover { color: #e8e4dc; }
+.ntab.active { color: #d4a843; border-bottom-color: #d4a843; }
+
+/* PANELS */
+.panel { display: none; padding: 24px 20px 60px; max-width: 820px; margin: 0 auto; }
+.panel.active { display: block; }
+
+/* FACT CARDS */
+.facts { display: flex; flex-direction: column; gap: 10px; }
+.fact {
+  background: #16161e; border: 1px solid #2a2a38;
+  border-radius: 10px; padding: 14px 18px;
+  display: flex; gap: 14px; align-items: flex-start;
+}
+.fact-n { font-family: Georgia, serif; font-size: 1.4rem; font-weight: bold; opacity: .3; min-width: 30px; line-height: 1; }
+.fact p { line-height: 1.65; font-size: .92rem; font-family: Arial, sans-serif; }
+.fact p b { color: #d4a843; }
+.fact p i { color: #7a7a92; }
+.fact.eng { border-left: 4px solid #cf3a3a; } .fact.eng .fact-n { color: #cf3a3a; }
+.fact.sco { border-left: 4px solid #4a7fd4; } .fact.sco .fact-n { color: #4a7fd4; }
+.fact.wal { border-left: 4px solid #1a7c3e; } .fact.wal .fact-n { color: #1a7c3e; }
+.fact.ni  { border-left: 4px solid #c77b22; } .fact.ni  .fact-n { color: #c77b22; }
+
+/* QUIZ */
+.qcard { background: #16161e; border: 1px solid #2a2a38; border-radius: 12px; padding: 24px; margin-top: 24px; }
+.qlabel { font-size: .7rem; font-weight: bold; text-transform: uppercase; letter-spacing: .12em; color: #d4a843; margin-bottom: 8px; font-family: Arial, sans-serif; }
+.qq { font-family: Georgia, serif; font-size: 1.1rem; margin-bottom: 18px; line-height: 1.4; }
+.qopts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.qopt {
+  padding: 11px 14px; border-radius: 9px; border: 1px solid #2a2a38;
+  background: #1e1e2a; color: #e8e4dc;
+  font-family: Arial, sans-serif; font-size: .85rem;
+  cursor: pointer; text-align: left;
+}
+.qopt:hover:not(:disabled) { border-color: #d4a843; color: #d4a843; }
+.qopt.correct { background: rgba(26,124,62,.25); border-color: #1a7c3e; color: #6ee89a; }
+.qopt.wrong   { background: rgba(207,58,58,.18); border-color: #cf3a3a; color: #f08080; }
+.qopt:disabled { cursor: default; }
+.qfb { margin-top: 14px; padding: 11px 14px; border-radius: 8px; font-size: .85rem; display: none; font-family: Arial, sans-serif; }
+.qfb.show { display: block; }
+.qfb.ok { background: rgba(26,124,62,.2); color: #6ee89a; }
+.qfb.ko { background: rgba(207,58,58,.15); color: #f08080; }
+.qreset { margin-top: 10px; padding: 7px 16px; border-radius: 7px; background: transparent; border: 1px solid #2a2a38; color: #7a7a92; font-family: Arial, sans-serif; font-size: .78rem; cursor: pointer; display: none; }
+.qreset:hover { border-color: #d4a843; color: #d4a843; }
+.qreset.show { display: inline-block; }
+
+/* GLOSSARY */
+.gloss-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; padding: 24px 20px 60px; max-width: 980px; margin: 0 auto; }
+.gcard { background: #16161e; border: 1px solid #2a2a38; border-radius: 12px; padding: 16px 18px; }
+.gcard:hover { border-color: #d4a843; }
+.gword { font-family: Georgia, serif; font-size: 1.15rem; font-weight: bold; color: #d4a843; margin-bottom: 4px; }
+.gnation { font-size: .7rem; font-weight: bold; text-transform: uppercase; letter-spacing: .1em; margin-bottom: 8px; font-family: Arial, sans-serif; }
+.gdef { color: #7a7a92; font-size: .82rem; line-height: 1.5; font-family: Arial, sans-serif; }
+
+/* CHAT */
+.chat-wrap { max-width: 720px; margin: 0 auto; padding: 16px 20px 60px; }
+.chat-info { background: #16161e; border: 1px solid #2a2a38; border-radius: 12px; padding: 14px 18px; margin-bottom: 16px; font-size: .82rem; color: #7a7a92; line-height: 1.5; font-family: Arial, sans-serif; }
+.chat-info b { color: #d4a843; }
+.messages { display: flex; flex-direction: column; gap: 12px; min-height: 340px; max-height: 460px; overflow-y: auto; padding: 4px 0; }
+.msg { max-width: 84%; padding: 11px 15px; border-radius: 12px; font-size: .87rem; line-height: 1.65; font-family: Arial, sans-serif; }
+.msg.user { align-self: flex-end; background: #d4a843; color: #0e0e12; font-weight: bold; border-bottom-right-radius: 3px; }
+.msg.ai { align-self: flex-start; background: #16161e; border: 1px solid #2a2a38; border-bottom-left-radius: 3px; }
+.msg.ai b { color: #d4a843; }
+.dots { display: flex; gap: 4px; padding: 3px 0; }
+.dots span { width: 7px; height: 7px; border-radius: 50%; background: #7a7a92; animation: bop 1.2s infinite; }
+.dots span:nth-child(2) { animation-delay: .2s; }
+.dots span:nth-child(3) { animation-delay: .4s; }
+@keyframes bop { 0%,60%,100%{transform:none} 30%{transform:translateY(-6px)} }
+.chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
+.chip { padding: 5px 12px; border-radius: 18px; border: 1px solid #2a2a38; background: transparent; color: #7a7a92; font-family: Arial, sans-serif; font-size: .76rem; cursor: pointer; }
+.chip:hover { border-color: #d4a843; color: #d4a843; }
+.cin-row { display: flex; gap: 8px; margin-top: 10px; }
+.cin { flex: 1; padding: 10px 14px; background: #16161e; border: 1px solid #2a2a38; border-radius: 9px; color: #e8e4dc; font-family: Arial, sans-serif; font-size: .88rem; outline: none; resize: none; }
+.cin:focus { border-color: #d4a843; }
+.csend { padding: 10px 20px; border-radius: 9px; background: #d4a843; color: #0e0e12; border: none; font-weight: bold; font-size: 1rem; cursor: pointer; }
+.csend:hover { opacity: .85; }
+
+@media (max-width: 560px) {
+  .qopts { grid-template-columns: 1fr; }
+  .nav-tab { padding: 5px 8px; font-size: .72rem; }
+  .ntab { padding: 7px 10px; font-size: .78rem; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">&#127468;&#127463; UK Cultures</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="goPage('home')">Home</button>
+    <button class="nav-tab" onclick="goPage('accents')">Accents</button>
+    <button class="nav-tab" onclick="goPage('customs')">Customs</button>
+    <button class="nav-tab" onclick="goPage('glossary')">Glossary</button>
+    <button class="nav-tab" onclick="goPage('chat')">AI Tutor</button>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-flags">&#127988; &#127988; &#127988; &#127468;&#127463;</div>
+    <h1>Understanding the<br><span>Linguistic &amp; Cultural</span><br>Differences</h1>
+    <p>Explore what makes England, Scotland, Wales and Northern Ireland distinct &mdash; in language, custom, and identity.</p>
+    <div class="hero-grid">
+      <div class="nation-card eng" onclick="goModule('accents','eng')">
+        <div class="flag">&#127988;</div>
+        <h3>England</h3>
+        <p>Dialect diversity, understated humour, and the myth of the &lsquo;BBC accent&rsquo;.</p>
+      </div>
+      <div class="nation-card sco" onclick="goModule('accents','sco')">
+        <div class="flag">&#127988;</div>
+        <h3>Scotland</h3>
+        <p>Scots as a language, egalitarian values, and directness without pretension.</p>
+      </div>
+      <div class="nation-card wal" onclick="goModule('accents','wal')">
+        <div class="flag">&#127988;</div>
+        <h3>Wales</h3>
+        <p>Hwyl, Wenglish, and one of Europe&rsquo;s fastest growing minority languages.</p>
+      </div>
+      <div class="nation-card ni" onclick="goModule('accents','ni')">
+        <div class="flag">&#127468;&#127463;</div>
+        <h3>Northern Ireland</h3>
+        <p>Ulster-Scots, generous hospitality, and navigating a complex identity.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ACCENTS -->
+<div class="page" id="page-accents">
+  <div class="mod-header">
+    <div class="breadcrumb" onclick="goPage('home')">&larr; Home</div>
+    <div class="mod-title">Module 1 &middot; Accents &amp; Dialects</div>
+    <div class="mod-sub">How the four nations speak &mdash; and what it really means.</div>
+  </div>
+  <div class="ntabs" id="at">
+    <button class="ntab active" onclick="goNation('accents','eng',this)">England</button>
+    <button class="ntab" onclick="goNation('accents','sco',this)">Scotland</button>
+    <button class="ntab" onclick="goNation('accents','wal',this)">Wales</button>
+    <button class="ntab" onclick="goNation('accents','ni',this)">N. Ireland</button>
+  </div>
+
+  <div class="panel active" id="accents-eng">
+    <div class="facts">
+      <div class="fact eng"><div class="fact-n">01</div><p>England has the greatest internal dialect diversity of the four nations &mdash; <b>'British accent'</b> is a myth.</p></div>
+      <div class="fact eng"><div class="fact-n">02</div><p><b>Geordie, Scouse, Cockney</b> and West Country can sound like different languages to an untrained ear.</p></div>
+      <div class="fact eng"><div class="fact-n">03</div><p>A Liverpudlian and a Somerset local may genuinely <b>struggle to understand</b> each other.</p></div>
+      <div class="fact eng"><div class="fact-n">04</div><p>Fewer than <b>3% of people</b> speak RP ('the BBC accent') natively &mdash; it is not the English norm.</p></div>
+    </div>
+    <div class="qcard">
+      <div class="qlabel">Quiz</div>
+      <div class="qq">Which city is associated with the 'Scouse' accent?</div>
+      <div class="qopts" id="q1">
+        <button class="qopt" onclick="qa(this,'q1',false,'f1','r1')">A) Manchester</button>
+        <button class="qopt" onclick="qa(this,'q1',true,'f1','r1')">B) Liverpool</button>
+        <button class="qopt" onclick="qa(this,'q1',false,'f1','r1')">C) Leeds</button>
+        <button class="qopt" onclick="qa(this,'q1',false,'f1','r1')">D) Birmingham</button>
+      </div>
+      <div class="qfb" id="f1"></div>
+      <button class="qreset" id="r1" onclick="qr('q1','f1','r1')">&#8635; Try again</button>
+    </div>
+  </div>
+
+  <div class="panel" id="accents-sco">
+    <div class="facts">
+      <div class="fact sco"><div class="fact-n">01</div><p>Scottish English is shaped by <b>Scots</b> &mdash; a distinct Germanic language, not merely an accent.</p></div>
+      <div class="fact sco"><div class="fact-n">02</div><p>Words like <b>'wee', 'braw'</b> and <b>'aye'</b> are everyday vocabulary, not performance.</p></div>
+      <div class="fact sco"><div class="fact-n">03</div><p><i>'I'm away to the shops'</i> follows Scots grammar &mdash; <b>not a quirky turn of phrase</b>.</p></div>
+      <div class="fact sco"><div class="fact-n">04</div><p>Glasgow's accent is <b>rapid and clipped</b>; the Highland lilt is entirely different.</p></div>
+    </div>
+    <div class="qcard">
+      <div class="qlabel">Quiz</div>
+      <div class="qq">'Scots' is best described as:</div>
+      <div class="qopts" id="q2">
+        <button class="qopt" onclick="qa(this,'q2',false,'f2','r2')">A) A strong accent</button>
+        <button class="qopt" onclick="qa(this,'q2',false,'f2','r2')">B) A dialect of English</button>
+        <button class="qopt" onclick="qa(this,'q2',true,'f2','r2')">C) A distinct language</button>
+        <button class="qopt" onclick="qa(this,'q2',false,'f2','r2')">D) A form of Gaelic</button>
+      </div>
+      <div class="qfb" id="f2"></div>
+      <button class="qreset" id="r2" onclick="qr('q2','f2','r2')">&#8635; Try again</button>
+    </div>
+  </div>
+
+  <div class="panel" id="accents-wal">
+    <div class="facts">
+      <div class="fact wal"><div class="fact-n">01</div><p>Welsh English has a distinctive <b>sing-song lilt</b> shaped by Welsh language stress patterns.</p></div>
+      <div class="fact wal"><div class="fact-n">02</div><p>Many Welsh speakers code-switch between Welsh and English mid-sentence &mdash; this is called <b>'Wenglish'</b>.</p></div>
+      <div class="fact wal"><div class="fact-n">03</div><p>In North Wales, <b>Welsh is the dominant daily language</b> &mdash; English may be the second language.</p></div>
+      <div class="fact wal"><div class="fact-n">04</div><p>Welsh has <b>~800,000 speakers</b> and is growing among young people, fuelled by Welsh-medium schools.</p></div>
+    </div>
+    <div class="qcard">
+      <div class="qlabel">Quiz</div>
+      <div class="qq">What is 'Wenglish'?</div>
+      <div class="qopts" id="q3">
+        <button class="qopt" onclick="qa(this,'q3',false,'f3','r3')">A) A Welsh insult</button>
+        <button class="qopt" onclick="qa(this,'q3',true,'f3','r3')">B) A mix of Welsh &amp; English</button>
+        <button class="qopt" onclick="qa(this,'q3',false,'f3','r3')">C) A North Wales dialect</button>
+        <button class="qopt" onclick="qa(this,'q3',false,'f3','r3')">D) Old Welsh spelling</button>
+      </div>
+      <div class="qfb" id="f3"></div>
+      <button class="qreset" id="r3" onclick="qr('q3','f3','r3')">&#8635; Try again</button>
+    </div>
+  </div>
+
+  <div class="panel" id="accents-ni">
+    <div class="facts">
+      <div class="fact ni"><div class="fact-n">01</div><p>Northern Ireland has two distinct accent groups: <b>Ulster-Scots</b> and <b>Irish-inflected</b>, reflecting its divided history.</p></div>
+      <div class="fact ni"><div class="fact-n">02</div><p>Both are <b>instantly distinct</b> from Republic of Ireland accents &mdash; they are not the same.</p></div>
+      <div class="fact ni"><div class="fact-n">03</div><p><i>'What about ye?'</i> is a standard <b>Belfast greeting</b> meaning 'How are you?' &mdash; not confrontational.</p></div>
+      <div class="fact ni"><div class="fact-n">04</div><p>Northern Irish and Southern Irish accents are noticeably <b>different</b> even to other British and Irish people.</p></div>
+    </div>
+    <div class="qcard">
+      <div class="qlabel">Quiz</div>
+      <div class="qq">'What about ye?' in Belfast means:</div>
+      <div class="qopts" id="q4">
+        <button class="qopt" onclick="qa(this,'q4',false,'f4','r4')">A) 'What do you want?'</button>
+        <button class="qopt" onclick="qa(this,'q4',false,'f4','r4')">B) 'Are you okay?'</button>
+        <button class="qopt" onclick="qa(this,'q4',true,'f4','r4')">C) 'How are you?'</button>
+        <button class="qopt" onclick="qa(this,'q4',false,'f4','r4')">D) 'What happened?'</button>
+      </div>
+      <div class="qfb" id="f4"></div>
+      <button class="qreset" id="r4" onclick="qr('q4','f4','r4')">&#8635; Try again</button>
+    </div>
+  </div>
+</div>
+
+<!-- CUSTOMS -->
+<div class="page" id="page-customs">
+  <div class="mod-header">
+    <div class="breadcrumb" onclick="goPage('home')">&larr; Home</div>
+    <div class="mod-title">Module 2 &middot; Social Customs &amp; Etiquette</div>
+    <div class="mod-sub">How the four nations interact &mdash; and what really lies beneath the surface.</div>
+  </div>
+  <div class="ntabs" id="ct">
+    <button class="ntab active" onclick="goNation('customs','eng',this)">England</button>
+    <button class="ntab" onclick="goNation('customs','sco',this)">Scotland</button>
+    <button class="ntab" onclick="goNation('customs','wal',this)">Wales</button>
+    <button class="ntab" onclick="goNation('customs','ni',this)">N. Ireland</button>
+  </div>
+
+  <div class="panel active" id="customs-eng">
+    <div class="facts">
+      <div class="fact eng"><div class="fact-n">01</div><p>English social culture is famously <b>indirect</b> &mdash; <i>'quite interesting'</i> often means 'I disagree'.</p></div>
+      <div class="fact eng"><div class="fact-n">02</div><p><b>'Not bad'</b> is high praise; <i>'You might want to consider&hellip;'</i> means 'please change this'.</p></div>
+      <div class="fact eng"><div class="fact-n">03</div><p>Politeness is expressed through <b>restraint, queuing</b> and never causing a scene.</p></div>
+      <div class="fact eng"><div class="fact-n">04</div><p>The English are not cold &mdash; warmth is real but shown through <b>understatement</b>, not effusiveness.</p></div>
+    </div>
+    <div class="qcard">
+      <div class="qlabel">Quiz</div>
+      <div class="qq">An English colleague says 'It's not quite what I had in mind.' This most likely means:</div>
+      <div class="qopts" id="q5">
+        <button class="qopt" onclick="qa(this,'q5',false,'f5','r5')">A) Minor tweak needed</button>
+        <button class="qopt" onclick="qa(this,'q5',true,'f5','r5')">B) Full rethink needed</button>
+        <button class="qopt" onclick="qa(this,'q5',false,'f5','r5')">C) They love it</button>
+        <button class="qopt" onclick="qa(this,'q5',false,'f5','r5')">D) They haven't decided</button>
+      </div>
+      <div class="qfb" id="f5"></div>
+      <button class="qreset" id="r5" onclick="qr('q5','f5','r5')">&#8635; Try again</button>
+    </div>
+  </div>
+
+  <div class="panel" id="customs-sco">
+    <div class="facts">
+      <div class="fact sco"><div class="fact-n">01</div><p>Scottish culture values <b>directness, egalitarianism</b> and a strong suspicion of pretension.</p></div>
+      <div class="fact sco"><div class="fact-n">02</div><p>Being <b>'too posh'</b> or status-signalling is more socially damaging in Scotland than in England.</p></div>
+      <div class="fact sco"><div class="fact-n">03</div><p>A junior employee addressing a CEO by <b>first name</b> is entirely normal &mdash; not disrespectful.</p></div>
+      <div class="fact sco"><div class="fact-n">04</div><p>Scots dislike being labelled <b>'British'</b> over <b>'Scottish'</b> &mdash; national identity matters.</p></div>
+    </div>
+    <div class="qcard">
+      <div class="qlabel">Quiz</div>
+      <div class="qq">In Scottish culture, which behaviour would cause most social awkwardness?</div>
+      <div class="qopts" id="q6">
+        <button class="qopt" onclick="qa(this,'q6',false,'f6','r6')">A) Using someone's first name</button>
+        <button class="qopt" onclick="qa(this,'q6',true,'f6','r6')">B) Boasting about salary</button>
+        <button class="qopt" onclick="qa(this,'q6',false,'f6','r6')">C) Arriving slightly late</button>
+        <button class="qopt" onclick="qa(this,'q6',false,'f6','r6')">D) Disagreeing openly</button>
+      </div>
+      <div class="qfb" id="f6"></div>
+      <button class="qreset" id="r6" onclick="qr('q6','f6','r6')">&#8635; Try again</button>
+    </div>
+  </div>
+
+  <div class="panel" id="customs-wal">
+    <div class="facts">
+      <div class="fact wal"><div class="fact-n">01</div><p>Welsh culture places enormous value on <b>community, choral tradition</b> and hwyl.</p></div>
+      <div class="fact wal"><div class="fact-n">02</div><p><b>Hwyl</b> is an untranslatable concept: passion, inspiration and communal feeling combined.</p></div>
+      <div class="fact wal"><div class="fact-n">03</div><p>A Welsh colleague inviting you to a <b>rugby match</b> is extending genuine community membership.</p></div>
+      <div class="fact wal"><div class="fact-n">04</div><p>Wales has its own government (<b>the Senedd</b>), language policy and distinct cultural identity.</p></div>
+    </div>
+    <div class="qcard">
+      <div class="qlabel">Quiz</div>
+      <div class="qq">'Hwyl' in Welsh culture refers to:</div>
+      <div class="qopts" id="q7">
+        <button class="qopt" onclick="qa(this,'q7',false,'f7','r7')">A) A type of bread</button>
+        <button class="qopt" onclick="qa(this,'q7',false,'f7','r7')">B) A farewell greeting</button>
+        <button class="qopt" onclick="qa(this,'q7',true,'f7','r7')">C) Communal passion</button>
+        <button class="qopt" onclick="qa(this,'q7',false,'f7','r7')">D) A rugby position</button>
+      </div>
+      <div class="qfb" id="f7"></div>
+      <button class="qreset" id="r7" onclick="qr('q7','f7','r7')">&#8635; Try again</button>
+    </div>
+  </div>
+
+  <div class="panel" id="customs-ni">
+    <div class="facts">
+      <div class="fact ni"><div class="fact-n">01</div><p>Northern Irish hospitality is famously generous &mdash; <b>guests are fed</b> and rarely allowed to leave quickly.</p></div>
+      <div class="fact ni"><div class="fact-n">02</div><p>Topics like <b>religion, politics</b> and the Troubles require sensitivity and practiced obliqueness.</p></div>
+      <div class="fact ni"><div class="fact-n">03</div><p><i>'What school did you go to?'</i> can be a way of gauging <b>religious/community background</b>.</p></div>
+      <div class="fact ni"><div class="fact-n">04</div><p>Younger generations often <b>reject sectarian framing</b> and identify primarily as Northern Irish.</p></div>
+    </div>
+    <div class="qcard">
+      <div class="qlabel">Quiz</div>
+      <div class="qq">'What school did you go to?' in NI can sometimes ask about your:</div>
+      <div class="qopts" id="q8">
+        <button class="qopt" onclick="qa(this,'q8',false,'f8','r8')">A) Academic record</button>
+        <button class="qopt" onclick="qa(this,'q8',false,'f8','r8')">B) Social class</button>
+        <button class="qopt" onclick="qa(this,'q8',true,'f8','r8')">C) Community background</button>
+        <button class="qopt" onclick="qa(this,'q8',false,'f8','r8')">D) Home neighbourhood</button>
+      </div>
+      <div class="qfb" id="f8"></div>
+      <button class="qreset" id="r8" onclick="qr('q8','f8','r8')">&#8635; Try again</button>
+    </div>
+  </div>
+</div>
+
+<!-- GLOSSARY -->
+<div class="page" id="page-glossary">
+  <div class="mod-header">
+    <div class="breadcrumb" onclick="goPage('home')">&larr; Home</div>
+    <div class="mod-title">Key Terms &amp; Phrases</div>
+    <div class="mod-sub">Words that don't translate &mdash; and what they actually mean.</div>
+  </div>
+  <div class="gloss-grid">
+    <div class="gcard"><div class="gword">Scouse</div><div class="gnation" style="color:#cf3a3a">England</div><div class="gdef">The distinctive accent of Liverpool. Named after 'lobscouse', a sailor's stew popular in the port city.</div></div>
+    <div class="gcard"><div class="gword">Geordie</div><div class="gnation" style="color:#cf3a3a">England</div><div class="gdef">The accent and dialect of Newcastle upon Tyne. One of the most recognisable dialects in England.</div></div>
+    <div class="gcard"><div class="gword">Cockney</div><div class="gnation" style="color:#cf3a3a">England</div><div class="gdef">East London's working-class dialect, famous for rhyming slang. Spoken by those born near Bow Bells church.</div></div>
+    <div class="gcard"><div class="gword">RP (Received Pronunciation)</div><div class="gnation" style="color:#cf3a3a">England</div><div class="gdef">The 'BBC accent' &mdash; spoken natively by fewer than 3% of English people. Prestigious but rare.</div></div>
+    <div class="gcard"><div class="gword">Not bad</div><div class="gnation" style="color:#cf3a3a">England</div><div class="gdef">High praise in English understatement. If someone says your work is 'not bad', you've done very well.</div></div>
+    <div class="gcard"><div class="gword">Quite interesting</div><div class="gnation" style="color:#cf3a3a">England</div><div class="gdef">Polite English disagreement. Often means 'I have serious doubts about this'. Classic understatement.</div></div>
+    <div class="gcard"><div class="gword">Wee</div><div class="gnation" style="color:#4a7fd4">Scotland</div><div class="gdef">Small or little. A core Scots vocabulary word used in everyday speech, not just for effect.</div></div>
+    <div class="gcard"><div class="gword">Braw</div><div class="gnation" style="color:#4a7fd4">Scotland</div><div class="gdef">Fine, good, attractive. From Scots. "A braw day" = a fine day.</div></div>
+    <div class="gcard"><div class="gword">Aye</div><div class="gnation" style="color:#4a7fd4">Scotland</div><div class="gdef">Yes. Used in everyday conversation across Scotland and in Ulster-Scots speech in Northern Ireland.</div></div>
+    <div class="gcard"><div class="gword">Wenglish</div><div class="gnation" style="color:#1a7c3e">Wales</div><div class="gdef">The natural mixing of Welsh and English mid-sentence &mdash; code-switching for bilingual Welsh speakers.</div></div>
+    <div class="gcard"><div class="gword">Hwyl</div><div class="gnation" style="color:#1a7c3e">Wales</div><div class="gdef">An untranslatable concept: passion, inspiration and communal fervour. Felt at rugby matches and choral events.</div></div>
+    <div class="gcard"><div class="gword">Senedd</div><div class="gnation" style="color:#1a7c3e">Wales</div><div class="gdef">The Welsh Parliament (pronounced 'SEH-neth'). Has powers over health, education and other devolved matters.</div></div>
+    <div class="gcard"><div class="gword">Lilt</div><div class="gnation" style="color:#1a7c3e">Wales</div><div class="gdef">The melodic, sing-song quality of Welsh-accented English, inherited from Welsh language stress patterns.</div></div>
+    <div class="gcard"><div class="gword">What about ye?</div><div class="gnation" style="color:#c77b22">Northern Ireland</div><div class="gdef">Standard Belfast greeting meaning 'How are you?'. Not aggressive &mdash; a genuinely warm opener.</div></div>
+    <div class="gcard"><div class="gword">Ulster-Scots</div><div class="gnation" style="color:#c77b22">Northern Ireland</div><div class="gdef">A dialect and recognised minority language of Scots spoken in parts of Northern Ireland.</div></div>
+    <div class="gcard"><div class="gword">The Troubles</div><div class="gnation" style="color:#c77b22">Northern Ireland</div><div class="gdef">The ethno-nationalist conflict in Northern Ireland (1968&ndash;1998). A sensitive topic requiring care.</div></div>
+  </div>
+</div>
+
+<!-- AI TUTOR -->
+<div class="page" id="page-chat">
+  <div class="mod-header">
+    <div class="breadcrumb" onclick="goPage('home')">&larr; Home</div>
+    <div class="mod-title">AI Tutor</div>
+    <div class="mod-sub">Ask questions, get quizzed, or bust a myth &mdash; no internet required.</div>
+  </div>
+  <div class="chat-wrap">
+    <div class="chat-info"><b>Fully offline</b> &mdash; works without internet, no account or API key needed. All knowledge is built into the app from the training material.</div>
+    <div class="messages" id="msgs">
+      <div class="msg ai">Hello! I'm your UK Cultures tutor. I know both modules &mdash; accents, customs, key phrases and cultural myths.<br><br>Ask me anything, or type <b>quiz me</b> for a surprise question!</div>
+    </div>
+    <div class="chips">
+      <button class="chip" onclick="chip('Quiz me!')">Quiz me!</button>
+      <button class="chip" onclick="chip('What does hwyl mean?')">What is hwyl?</button>
+      <button class="chip" onclick="chip('Explain English indirectness')">English indirectness</button>
+      <button class="chip" onclick="chip('What is Wenglish?')">Wenglish?</button>
+      <button class="chip" onclick="chip('Tell me about Scotland customs')">Scotland tips</button>
+      <button class="chip" onclick="chip('Sensitive topics in Northern Ireland')">NI sensitivity</button>
+      <button class="chip" onclick="chip('What does not bad mean in England?')">'Not bad' meaning</button>
+      <button class="chip" onclick="chip('Tell me about the Welsh language')">Welsh language</button>
+    </div>
+    <div class="cin-row">
+      <textarea class="cin" id="cin" rows="2" placeholder="Type your question..." onkeydown="ck(event)"></textarea>
+      <button class="csend" onclick="send()">&#8593;</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// NAVIGATION
+const PAGES = ['home','accents','customs','glossary','chat'];
+function goPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('button.nav-tab').forEach((t,i) => t.classList.toggle('active', PAGES[i] === id));
+  document.getElementById('page-'+id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function goModule(mod, nation) { goPage(mod); goNation(mod, nation); }
+function goNation(mod, nation, btn) {
+  // Hide all panels in this module
+  document.querySelectorAll('#page-'+mod+' .panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(mod+'-'+nation).classList.add('active');
+  // Find the tab container by scanning for ntabs inside the module page
+  const tabContainer = document.querySelector('#page-'+mod+' .ntabs');
+  if (tabContainer) {
+    tabContainer.querySelectorAll('.ntab').forEach(t => t.classList.remove('active'));
+    // If btn passed directly, use it; otherwise find by position
+    if (btn) {
+      btn.classList.add('active');
+    } else {
+      const nations = ['eng','sco','wal','ni'];
+      const idx = nations.indexOf(nation);
+      const tabs = tabContainer.querySelectorAll('.ntab');
+      if (idx >= 0 && tabs[idx]) tabs[idx].classList.add('active');
+    }
+  }
+}
+
+// QUIZ BUTTONS
+function qa(btn, gid, correct, fid, rid) {
+  document.querySelectorAll('#'+gid+' .qopt').forEach(o => o.disabled = true);
+  const fb = document.getElementById(fid);
+  if (correct) {
+    btn.classList.add('correct');
+    fb.textContent = 'Correct! Well done.';
+    fb.className = 'qfb show ok';
+  } else {
+    btn.classList.add('wrong');
+    document.querySelectorAll('#'+gid+' .qopt').forEach(o => {
+      if (o.getAttribute('onclick').includes(',true,')) o.classList.add('correct');
+    });
+    fb.textContent = 'Not quite — the highlighted answer is correct.';
+    fb.className = 'qfb show ko';
+  }
+  document.getElementById(rid).classList.add('show');
+}
+function qr(gid, fid, rid) {
+  document.querySelectorAll('#'+gid+' .qopt').forEach(o => { o.disabled = false; o.classList.remove('correct','wrong'); });
+  const fb = document.getElementById(fid); fb.className = 'qfb'; fb.textContent = '';
+  document.getElementById(rid).classList.remove('show');
+}
+
+// KNOWLEDGE BASE
+const KB = [
+  {k:['hello','hi ','hey ','hiya','start','help'], r:`Hello! I'm your UK Cultures tutor. I can answer questions about accents, dialects, social customs and cultural differences across England, Scotland, Wales and Northern Ireland. Ask me anything, or type <b>quiz me</b>!`},
+  {k:['quiz','test me','question','challenge','surprise'], quiz:true},
+  {k:['scouse','liverpool'], r:`<b>Scouse</b> is the distinctive accent of Liverpool. The name comes from 'lobscouse', a sailor's stew popular in the port city. It's so distinct that a Liverpudlian and a Somerset local can genuinely struggle to understand each other.`},
+  {k:['geordie','newcastle'], r:`<b>Geordie</b> is the accent and dialect of Newcastle upon Tyne. One of the most recognisable dialects in England, with vocabulary that can surprise outsiders.`},
+  {k:['cockney','east london','rhyming slang'], r:`<b>Cockney</b> is East London's working-class dialect, famous for rhyming slang (e.g. 'dog and bone' = phone). Traditionally spoken by those born within earshot of Bow Bells.`},
+  {k:['rp','received pronunciation','bbc accent','3%'], r:`<b>RP (Received Pronunciation)</b> — the 'BBC accent' — is spoken natively by fewer than <b>3%</b> of English people. Despite its prestige, it is far from the norm. There is no single 'British accent' — England has enormous internal dialect diversity.`},
+  {k:['british accent','myth','diverse','dialect england'], r:`One of the biggest myths: <b>there is no single 'British accent'</b>. England alone has extraordinary diversity — Geordie, Scouse, Cockney, West Country and more. They can sound like different languages to an untrained ear.`},
+  {k:['scots language','scots is','scots grammar','germanic'], r:`<b>Scots</b> is a distinct Germanic language — not simply a dialect of English. It has its own grammar and vocabulary. Phrases like 'I'm away to the shops' follow Scots grammar. Words like 'wee', 'braw' and 'aye' are everyday vocabulary, not performance.`},
+  {k:['wee','braw','aye','scots word'], r:`Some everyday Scots words:\n- <b>Wee</b> — small, little\n- <b>Braw</b> — fine, good ('a braw day')\n- <b>Aye</b> — yes\n\nThese are genuine daily vocabulary reflecting the influence of the Scots language.`},
+  {k:['glasgow','highland lilt','clipped'], r:`Even within Scotland, accents vary enormously. <b>Glasgow</b> is fast and clipped; the <b>Highland lilt</b> — shaped by Gaelic — is musical and quite different. A Glaswegian and a Highlander can sound nothing alike.`},
+  {k:['wenglish','code switch','welsh english mix'], r:`<b>Wenglish</b> is the natural mixing of Welsh and English mid-sentence by bilingual speakers. It's code-switching — completely natural for fluent Welsh-English bilinguals. Not 'broken' Welsh or English.`},
+  {k:['welsh lilt','sing-song','welsh accent'], r:`Welsh English has a characteristic <b>sing-song lilt</b> — a rising and falling intonation inherited from Welsh language stress patterns. It makes Welsh-accented English immediately distinctive and often described as melodic.`},
+  {k:['north wales','welsh dominant','welsh language','800,000','800000'], r:`In <b>North Wales</b>, Welsh is the dominant daily language — English can be the second language there. Welsh has approximately <b>800,000 speakers</b> and the number is growing, driven by Welsh-medium schools.`},
+  {k:['hwyl','communal passion','passion wales'], r:`<b>Hwyl</b> (pronounced 'hoo-il') is an untranslatable Welsh concept combining passion, inspiration and communal fervour. It's the feeling in a rugby crowd or a massed choir. If a Welsh colleague invites you to a rugby match, they're offering genuine community membership.`},
+  {k:['senedd','welsh parliament'], r:`The <b>Senedd</b> (pronounced 'SEH-neth') is the Welsh Parliament. It has legislative powers over health, education and transport. Wales has its own distinct government, language policy and cultural identity.`},
+  {k:['rugby','choral','choir wales'], r:`Wales has deep cultural traditions around <b>rugby</b> and <b>choral singing</b>. Both are tied to hwyl — communal passion and shared identity. An invitation to a rugby match is a meaningful gesture of inclusion.`},
+  {k:['what about ye','belfast greeting'], r:`<b>'What about ye?'</b> is the standard Belfast greeting meaning 'How are you?' It sounds confrontational to outsiders but is entirely warm and friendly.`},
+  {k:['ulster-scots','ulster scots'], r:`<b>Ulster-Scots</b> is a dialect and recognised minority language of Scots, spoken in parts of Northern Ireland, especially in the east and north. It reflects the historic migration of Scots settlers to Ulster.`},
+  {k:['northern ireland accent','ni accent','two accents','republic'], r:`Northern Ireland has <b>two distinct accent groups</b>: Ulster-Scots and Irish-inflected. Both are immediately distinct from Republic of Ireland accents. Northern Irish and Southern Irish accents are noticeably different even to British and Irish ears.`},
+  {k:['school ni','what school','community background','sectarian'], r:`In Northern Ireland, <b>'What school did you go to?'</b> can subtly gauge religious and community background — since Catholic and Protestant schools have traditionally been separate. Less common among younger generations who reject sectarian framing.`},
+  {k:['troubles','conflict ni','1968','1998'], r:`<b>The Troubles</b> refers to the ethno-nationalist conflict in Northern Ireland (roughly 1968–1998). Religion, politics and the Troubles remain sensitive topics requiring care. Younger generations often focus on a shared Northern Irish identity.`},
+  {k:['hospitality ni','northern ireland food','generous ni'], r:`Northern Irish hospitality is famously generous. Guests are typically fed and rarely allowed to leave quickly! Refusing food or drink can feel genuinely rude.`},
+  {k:['indirect','indirectness','english indirect','not quite','not what i had'], r:`English communication is famously <b>indirect</b>. A quick guide:\n- 'Quite interesting' = I disagree\n- 'Not bad' = This is really good\n- 'You might want to consider...' = Please change this\n- 'Not quite what I had in mind' = Full rethink needed\n\nEnglish politeness is built on understatement and restraint.`},
+  {k:['not bad','high praise','understatement'], r:`In English culture, <b>'not bad'</b> is genuine high praise. The English express enthusiasm through restraint. If someone says your work is 'not bad', you've done well!`},
+  {k:['queuing','queue','restraint english'], r:`English politeness is expressed through <b>restraint</b> — queuing properly, never making a scene, understatement over effusiveness. The English are not cold; warmth is conveyed differently than in more expressive cultures.`},
+  {k:['scottish direct','egalitarian','pretension','posh scotland','boast'], r:`Scottish culture values <b>directness and egalitarianism</b>. Being 'too posh' or status-signalling is more socially damaging in Scotland than England. Boasting about salary is the surest way to cause awkwardness. Using a CEO's first name is entirely normal.`},
+  {k:['british scottish','label scottish','identity scotland'], r:`Scots typically prefer to be identified as <b>Scottish</b> rather than 'British'. Calling someone Scottish 'British' can feel dismissive of their national identity.`},
+  {k:['difference','compare','four nations','all four','overview'], r:`The four UK nations have fascinatingly different cultures:\n\n<b>England</b> — indirect, understated, enormous dialect diversity\n<b>Scotland</b> — direct, egalitarian, Scots is a distinct language\n<b>Wales</b> — community-focused, bilingual, hwyl and choral tradition\n<b>N. Ireland</b> — generous hospitality, complex identity, sensitive history\n\nWhich nation would you like to explore?`},
+  {k:['gaelic'], r:`There are two separate Gaelic languages: <b>Scottish Gaelic</b> (~60,000 speakers, mainly Highlands) and <b>Irish Gaelic</b> (Republic of Ireland). Neither should be confused with <b>Scots</b>, which is a Germanic language related to English, not a Celtic one.`},
+  {k:[''], fallback:true, r:`I don't have a detailed answer for that. Try asking about:\n- Accents: Scouse, Geordie, Scots language, Welsh lilt\n- Customs: English indirectness, Scottish egalitarianism, hwyl\n- Terms: Wenglish, RP, Ulster-Scots, The Troubles\n- Or type <b>quiz me</b> for a question!`}
+];
+
+const QUIZZES = [
+  {q:'Which city is associated with the Scouse accent?',opts:['Manchester','Liverpool','Leeds','Birmingham'],c:1,e:"Scouse is the accent of Liverpool — named after a sailor's stew called lobscouse."},
+  {q:"Scots is best described as:",opts:['A strong English accent','A dialect of English','A distinct Germanic language','A form of Gaelic'],c:2,e:"Scots is a distinct Germanic language with its own grammar and vocabulary."},
+  {q:"What is Wenglish?",opts:['A Welsh insult','A mix of Welsh and English','A North Wales dialect','Old Welsh spelling'],c:1,e:"Wenglish is natural code-switching between Welsh and English by bilingual speakers."},
+  {q:"'What about ye?' in Belfast means:",opts:['"What do you want?"','"Are you okay?"','"How are you?"','"What happened?"'],c:2,e:"It's the standard Belfast greeting — warm and friendly, not confrontational."},
+  {q:"An English colleague says 'It's not quite what I had in mind.' This means:",opts:['A minor tweak needed','A full rethink needed','They love it',"They haven't decided"],c:1,e:"English indirectness: this politely signals the work needs to be completely reconsidered."},
+  {q:"In Scottish culture, what causes the most social awkwardness?",opts:["Using someone's first name","Boasting about your salary","Arriving slightly late","Disagreeing openly"],c:1,e:"Scottish culture values egalitarianism — boasting about wealth or status is seen very negatively."},
+  {q:"Hwyl in Welsh culture refers to:",opts:['A type of bread','A farewell greeting','Communal passion and inspiration','A rugby position'],c:2,e:"Hwyl is an untranslatable concept combining passion, communal energy and inspiration."},
+  {q:"'What school did you go to?' in NI can subtly ask about your:",opts:['Academic record','Social class','Community background','Home neighbourhood'],c:2,e:"Catholic and Protestant schools have traditionally been separate in NI, so this can gauge community background."},
+  {q:"What percentage of English people speak RP natively?",opts:['About 30%','About 15%','About 10%','Fewer than 3%'],c:3,e:"RP is spoken natively by fewer than 3% of English people — far from the norm."},
+  {q:"In North Wales, what is the dominant daily language?",opts:['English','Welsh','Wenglish','Ulster-Scots'],c:1,e:"Welsh is the dominant daily language in much of North Wales — English may effectively be the second language."},
+];
+
+let pool = [], activeQ = null;
+function pickQ() { if (!pool.length) pool = [...QUIZZES].sort(()=>Math.random()-.5); return pool.pop(); }
+
+function respond(txt) {
+  const t = txt.toLowerCase();
+  if (activeQ) {
+    const map={a:0,b:1,c:2,d:3,'1':0,'2':1,'3':2,'4':3};
+    let chosen = -1;
+    const lm = t.match(/\b([abcd])\b/), nm = t.match(/\b([1-4])\b/);
+    if (lm) chosen = map[lm[1]];
+    else if (nm) chosen = map[nm[1]];
+    else activeQ.opts.forEach((o,i)=>{ if(t.includes(o.toLowerCase().slice(0,6))) chosen=i; });
+    if (chosen >= 0) {
+      const q = activeQ; activeQ = null;
+      if (chosen === q.c) return `Correct! ${q.e}\n\nType <b>quiz me</b> for another question!`;
+      return `Not quite. The correct answer was <b>${q.opts[q.c]}</b>.\n\n${q.e}\n\nType <b>quiz me</b> to try another!`;
+    }
+    return 'Please answer with <b>A, B, C or D</b>.';
+  }
+  for (const e of KB) {
+    if (e.fallback) continue;
+    if (e.quiz) {
+      if (e.k.some(k => t.includes(k))) {
+        activeQ = pickQ();
+        const L=['A','B','C','D'];
+        return `<b>Quiz time!</b>\n\n${activeQ.q}\n\n${activeQ.opts.map((o,i)=>`<b>${L[i]})</b> ${o}`).join('\n')}\n\nType A, B, C or D to answer.`;
+      }
+      continue;
+    }
+    if (e.k.some(k => k && t.includes(k))) return e.r;
+  }
+  return KB[KB.length-1].r;
+}
+
+function ck(e) { if (e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();} }
+function chip(t) { document.getElementById('cin').value=t; send(); }
+function send() {
+  const inp = document.getElementById('cin');
+  const t = inp.value.trim(); if (!t) return;
+  inp.value = '';
+  addMsg(t,'user');
+  const dots = addTyping();
+  setTimeout(()=>{ dots.remove(); addMsg(respond(t),'ai'); }, 400+Math.random()*350);
+}
+function addMsg(t, role) {
+  const el = document.createElement('div');
+  el.className = 'msg '+role;
+  el.innerHTML = t.replace(/\n/g,'<br>');
+  const msgs = document.getElementById('msgs');
+  msgs.appendChild(el);
+  msgs.scrollTop = msgs.scrollHeight;
+  return el;
+}
+function addTyping() {
+  const el = document.createElement('div');
+  el.className = 'msg ai';
+  el.innerHTML = '<div class="dots"><span></span><span></span><span></span></div>';
+  const msgs = document.getElementById('msgs');
+  msgs.appendChild(el);
+  msgs.scrollTop = msgs.scrollHeight;
+  return el;
+}
+</script>
+</body>
+</html>
